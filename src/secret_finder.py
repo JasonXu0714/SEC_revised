@@ -1,0 +1,25 @@
+def contains_trade_secret_column(df):
+    # List of column names to search for
+    search_columns = [
+        "trade secret",
+        "trade secrets",
+        "net trade secret",
+        "net trade secrets",
+        "trade secrets (not subject to amortization)",
+        "trade secrecy",
+        "net trade secrecy",
+    ]
+
+    # Filter rows where the first column is a string, then check if any value matches the search_columns list
+    filtered_df = df[df.iloc[:, 0].apply(lambda x: isinstance(x, str))]
+    result = None
+    try:
+        result = any(filtered_df.iloc[:, 0].str.lower().isin(search_columns))
+    except:
+        return None
+    return result
+
+
+def contains_trade_secret(content):
+    # Check if 'trade secret' or 'trade secrecy' is in the content
+    return "trade secret" in content.lower() or "trade secrecy" in content.lower()
