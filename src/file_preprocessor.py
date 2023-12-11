@@ -2,7 +2,7 @@ import pickle
 from edgar import *
 
 
-def download_attachments(filing_10k_by_year, file_name, year):
+def download_attachments(filing_10k_by_year, file_name, year, early_stop=True):
     # Initialize an empty dictionary to store attachments.
     filing_attachments = (
         {}
@@ -17,6 +17,8 @@ def download_attachments(filing_10k_by_year, file_name, year):
             print(first_attachment.url)
             # Download the attachment and store it in the dictionary with its URL as the key.
             filing_attachments[first_attachment.url] = first_attachment.download()
+            if early_stop:
+                break
 
     # Open a file with the given file name in write-binary mode.
     with open(f"{file_name}_{year}.pkl", "wb") as file:

@@ -47,7 +47,17 @@ def sec_helper(start_year, end_year, column_names, file_name, filling_10k_by_yea
                     print(
                         f"Error happened while calling read_html() for {filing_date}, {company_name}: {str(e)}"
                     )
-        return list_df
+                target_trade_secret_form = None
+
+                # Iterate over each DataFrame in the list
+                for form_df in list_df:
+                    # Check if the string 'trade secret' is present in the DataFrame (case-insensitive)
+                    if "trade secret" in form_df.to_markdown().lower():
+                        # if contains_trade_secret_column(form_df):
+                        # If found, assign this DataFrame to variable 'a' and break the loop
+                        target_trade_secret_form = form_df
+                        break
+        return target_trade_secret_form
 
 
 if __name__ == "__main__":
