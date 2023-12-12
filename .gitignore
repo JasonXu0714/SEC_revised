@@ -2,3 +2,6 @@
 __pycache__/
 #download file
 *.pkl
+#outout file
+*.csv
+*.zip

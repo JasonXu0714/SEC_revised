@@ -5,23 +5,25 @@ import time
 import sys
 import secret_finder
 import file_preprocessor
+import export_dataframe
 from edgar import *
 from tqdm import tqdm
 
 
-def sec_helper(start_year, end_year, column_names, file_name, filling_10k_by_year):
+def sec_helper(start_year, end_year, column_names, file_name, filing_10k_by_year):
     """
     Input:
         start_year
         end_year
     """
+    results_df = pd.DataFrame(columns=config.COLUMN_NAMES)
     for i in tqdm(range(start_year, end_year + 1)):
         time.sleep(1)
         file_preprocessor.download_attachments(
-            filling_10k_by_year, file_name, i
+            filing_10k_by_year, file_name, i
         )  # ONLY CALL THIS FUNCTION WHEN YOU NEED TO RE-DOWNLOAD ATTACHMENTS ???
-    for year in range(START_YEAR, END_YEAR + 1):
-        stored_attachments = load_attachments(FILE_NAME, year)
+    for year in range(start_year, end_year + 1):
+        stored_attachments = file_preprocessor.load_attachments(file_name, year)
         for i, filing in enumerate(filing_10k_by_year[year]):
             filing_date = filing.filing_date
             # Note: write a script to scrape conformed_year_dict
@@ -41,7 +43,7 @@ def sec_helper(start_year, end_year, column_names, file_name, filling_10k_by_yea
                     list_df = pd.read_html(content)
                     url = first_attachment_url
 
-                    if contains_trade_secret(content):
+                    if secret_finder.contains_trade_secret(content):
                         indicator = 1
 
                 except Exception as e:
@@ -151,10 +153,13 @@ def sec_helper(start_year, end_year, column_names, file_name, filling_10k_by_yea
 
 if __name__ == "__main__":
     set_identity("jason.xu071498@gmail.com")
-
     start_year, end_year = config.START_YEAR, config.END_YEAR
     column_names = config.COLUMN_NAMES
+
     filename = config.FILE_NAME
-    filling_10k_by_year = file_preprocessor.filter_filling_by_year(start_year, end_year)
+    filling_10k_by_year = file_preprocessor.filter_filling_by_year(
+        start_year, end_year, slice=5
+    )
+
     df = sec_helper(start_year, end_year, column_names, filename, filling_10k_by_year)
-    print(df)
+    export_dataframe.output_to_csv(df, f"{filename}:{start_year}-{end_year}.csv")

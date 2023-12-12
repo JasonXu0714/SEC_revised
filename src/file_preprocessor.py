@@ -5,9 +5,8 @@ from edgar import *
 
 def download_attachments(filing_10k_by_year, file_name, year):
     # Initialize an empty dictionary to store attachments.
-    filing_attachments = (
-        {}
-    )  # key: attachment URL, value: file object of the html attachment
+    filing_attachments = {}
+    # key: attachment URL, value: file object of the html attachment
 
     # Loop through each filing in the provided list of 10-K filings.
     for _, filing in enumerate(filing_10k_by_year[year]):
@@ -35,7 +34,7 @@ def load_attachments(file_name, year):
         return loaded_data
 
 
-def filter_filling_by_year(start_year, end_year):
+def filter_filling_by_year(start_year, end_year, slice=5):
     """
     Fetch filings for the specified year range
     Input:
@@ -45,8 +44,9 @@ def filter_filling_by_year(start_year, end_year):
     """
     filing_10k_by_year = {}
     for year in range(start_year, end_year + 1):
-        # filing_10k = get_filings(year=year).filter(form=["10-K"])
         time.sleep(0.5)
-        filing_10k = get_filings(year=year).filter(form=["10-K"]).latest(1)
+        filing_10k = (
+            get_filings(year=year).filter(form=["10-K"]).latest(slice)
+        )  # have to be more than one otherwise not iterable
         filing_10k_by_year[year] = filing_10k  # ?
     return filing_10k_by_year
