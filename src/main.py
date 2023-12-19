@@ -72,14 +72,26 @@ def sec_helper(start_year, end_year, column_names, file_name, filing_10k_by_year
 
                     for form_row in target_trade_secret_form.rows():
                         if form_row[0]:
-                            if "secret" in form_row[0]:
+                            # if "secret" in form_row[0]:
+                            if any(
+                                keyword in test_prefix
+                                for test_prefix in str(form_row[0]).lower()
+                                for keyword in keywords
+                            ):
                                 for item in form_row:
                                     try:
                                         if float(item) > 0:
                                             if (
-                                                "trade secret" in form_row[0].lower()
-                                                or "trade secrecy"
-                                                in form_row[0].lower()
+                                                # "trade secret" in form_row[0].lower()
+                                                # or "trade secrecy"
+                                                # in form_row[0].lower()
+                                                any(
+                                                    keyword in test_prefix
+                                                    for test_prefix in str(
+                                                        form_row[0]
+                                                    ).lower()
+                                                    for keyword in keywords
+                                                )
                                             ):
                                                 try:
                                                     trade_secrets = float(item)
