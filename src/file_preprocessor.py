@@ -47,6 +47,6 @@ def filter_filling_by_year(start_year, end_year, slice=5):
         time.sleep(0.5)
         filing_10k = (
             get_filings(year=year).filter(form=["10-K"]).latest(slice)
-        )  # have to be more than one otherwise not iterable
+        )  # must greater than one otherwise not iterable
         filing_10k_by_year[year] = filing_10k  # ?
     return filing_10k_by_year
