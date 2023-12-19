@@ -54,37 +54,48 @@ def sec_helper(start_year, end_year, column_names, file_name, filing_10k_by_year
                     list_df = []
 
                 target_trade_secret_form = None
-                test = ""
                 for form_df in list_df:
+                    # for test_prefix in form_df.to_markdown().lower():
+                    #     if test_prefix == "trade secret":
+                    #         print("catch trade secret!")
                     if any(
                         keyword in test_prefix
                         for test_prefix in form_df.to_markdown().lower()
                         for keyword in keywords
                     ):
-                        print("aaaa")
-                        test = test_prefix
                         target_trade_secret_form = form_df
                         break
 
                 if target_trade_secret_form is not None:
                     target_trade_secret_form = pl.from_pandas(target_trade_secret_form)
-                    trade_secrets = None
+                    trade_secrets: float = None
 
                     for form_row in target_trade_secret_form.rows():
                         if form_row[0]:
-                            if any(
-                                keyword in test_prefix
-                                for test_prefix in str(form_row[0]).lower()
-                                for keyword in keywords
-                            ):
+                            if "secret" in form_row[0]:
                                 for item in form_row:
                                     try:
                                         if float(item) > 0:
-                                            trade_secrets = float(item)
-                                            break
-                                    except (ValueError, TypeError):
+                                            if (
+                                                "trade secret" in form_row[0].lower()
+                                                or "trade secrecy"
+                                                in form_row[0].lower()
+                                            ):
+                                                try:
+                                                    trade_secrets = float(item)
+                                                except Exception as e:
+                                                    print(
+                                                        f"Edge case: {filing_date} {cik} {company_name}"
+                                                    )  # debug only
+                                                    break
+                                                break
+                                            else:
+                                                print(form_row[0])
+                                                print("Unexpected case")  # debug only
+                                    except ValueError:
                                         continue
-
+                                    except TypeError:
+                                        continue
                     new_row = {
                         "company_name": company_name,
                         "filing_date": filing_date,
