@@ -1,3 +1,6 @@
+import re
+
+
 def contains_trade_secret_column(df):
     # List of column names to search for
     search_columns = [
@@ -23,3 +26,16 @@ def contains_trade_secret_column(df):
 def contains_trade_secret(content):
     # Check if 'trade secret' or 'trade secrecy' is in the content
     return "trade secret" in content.lower() or "trade secrecy" in content.lower()
+
+
+def find_secret(keywords, text):
+    matches = []
+    for keyword in keywords:
+        match = re.findall(
+            r"[\w\s]*" + re.escape(keyword) + r"[\w\s]*",
+            text,
+            re.IGNORECASE,
+        )
+        if match:
+            matches.extend(match)
+    return len(matches) > 0

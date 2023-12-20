@@ -1,5 +1,6 @@
 import pickle
 import time
+from tqdm import tqdm
 from edgar import *
 
 
@@ -54,3 +55,9 @@ def filter_filling_by_year(start_year, end_year, slice=5):
         )  # must greater than one otherwise not iterable
         filing_10k_by_year[year] = filing_10k  # ?
     return filing_10k_by_year
+
+
+def download_files(start_year, end_year, filing_10k_by_year, file_name):
+    for i in tqdm(range(start_year, end_year + 1)):
+        time.sleep(1)
+        download_attachments(filing_10k_by_year, file_name, i)

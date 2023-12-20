@@ -1,9 +1,6 @@
 import pandas as pd
 import polars as pl
 import config
-import time
-import sys
-import re
 import secret_finder
 import file_preprocessor
 import export_dataframe
@@ -18,7 +15,10 @@ keywords = ["trade secre"]
 def process_attachments(results_df, year, stored_attachments, filing_10k_by_year):
     for _, filing in enumerate(filing_10k_by_year[year]):
         new_row = process_filing(filing, stored_attachments)
-        results_df = pd.concat([results_df, pd.DataFrame([new_row])], ignore_index=True)
+        if len(new_row) > 0:
+            results_df = pd.concat(
+                [results_df, pd.DataFrame([new_row])], ignore_index=True
+            )
     return results_df
 
 
