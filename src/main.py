@@ -3,11 +3,29 @@ import polars as pl
 import config
 import time
 import sys
+import re
 import secret_finder
 import file_preprocessor
 import export_dataframe
+from io import StringIO
 from edgar import *
 from tqdm import tqdm
+
+# keywords = ["secre", "know", "intellect", "confiden", "proprie"]
+keywords = ["trade secre", "know", "intellect", "confiden", "proprie"]
+
+
+def find_secret(keywords, text):
+    matches = []
+    for keyword in keywords:
+        match = re.findall(
+            r"[\w\s]*" + re.escape(keyword) + r"[\w\s]*",
+            text,
+            re.IGNORECASE,
+        )
+        if match:
+            matches.extend(match)
+    return len(matches) > 0
 
 
 def sec_helper(start_year, end_year, column_names, file_name, filing_10k_by_year):
@@ -16,17 +34,22 @@ def sec_helper(start_year, end_year, column_names, file_name, filing_10k_by_year
         start_year
         end_year
     """
-    keywords = ["secre", "know", "intellect", "confiden", "proprie"]
     results_df = pd.DataFrame(columns=config.COLUMN_NAMES)
     # for i in tqdm(range(start_year, end_year + 1)):
     #     time.sleep(1)
     #     file_preprocessor.download_attachments(
     #         filing_10k_by_year, file_name, i
     #     )  # ONLY CALL THIS FUNCTION WHEN YOU NEED TO RE-DOWNLOAD ATTACHMENTS ???
-    """filter"""
+    """
+    input: filing
+    output: dataframe containing secrets 
+    """
     for year in range(start_year, end_year + 1):
         stored_attachments = file_preprocessor.load_attachments(file_name, year)
         for i, filing in enumerate(filing_10k_by_year[year]):
+            # if i != 39 and i != 43:
+            #     continue
+            print(i)
             filing_date = filing.filing_date
             cik = filing.cik
             company_name = filing.company
@@ -40,7 +63,8 @@ def sec_helper(start_year, end_year, column_names, file_name, filing_10k_by_year
                     first_attachment_url = filing.attachments[0].url
                     content = stored_attachments.get(first_attachment_url)
                     url = first_attachment_url
-                    list_df = pd.read_html(content)
+                    s = StringIO(content)
+                    list_df = pd.read_html(s)
 
                     if secret_finder.contains_trade_secret(
                         content
@@ -52,58 +76,33 @@ def sec_helper(start_year, end_year, column_names, file_name, filing_10k_by_year
                         f"Error happened while calling read_html() for {filing_date}, {company_name}: {str(e)}"
                     )
                     list_df = []
-
                 target_trade_secret_form = None
                 for form_df in list_df:
-                    # for test_prefix in form_df.to_markdown().lower():
-                    #     if test_prefix == "trade secret":
-                    #         print("catch trade secret!")
-                    if any(
-                        keyword in test_prefix
-                        for test_prefix in form_df.to_markdown().lower()
-                        for keyword in keywords
-                    ):
+                    texts = form_df.to_markdown()
+                    match = find_secret(keywords, texts)
+                    if match:
                         target_trade_secret_form = form_df
-                        break
-
+                        break  # no early break
                 if target_trade_secret_form is not None:
                     target_trade_secret_form = pl.from_pandas(target_trade_secret_form)
                     trade_secrets: float = None
 
                     for form_row in target_trade_secret_form.rows():
                         if form_row[0]:
-                            # if "secret" in form_row[0]:
-                            if any(
-                                keyword in test_prefix
-                                for test_prefix in str(form_row[0]).lower()
-                                for keyword in keywords
-                            ):
+                            if find_secret(keywords, str(form_row[0]).lower()):
                                 for item in form_row:
                                     try:
                                         if float(item) > 0:
-                                            if (
-                                                # "trade secret" in form_row[0].lower()
-                                                # or "trade secrecy"
-                                                # in form_row[0].lower()
-                                                any(
-                                                    keyword in test_prefix
-                                                    for test_prefix in str(
-                                                        form_row[0]
-                                                    ).lower()
-                                                    for keyword in keywords
-                                                )
-                                            ):
-                                                try:
-                                                    trade_secrets = float(item)
-                                                except Exception as e:
-                                                    print(
-                                                        f"Edge case: {filing_date} {cik} {company_name}"
-                                                    )  # debug only
-                                                    break
+                                            try:
+                                                trade_secrets = float(item)
+                                            except ValueError:
+                                                print(
+                                                    f"Edge case: {filing_date} {cik} {company_name}"
+                                                )  # debug only
                                                 break
-                                            else:
-                                                print(form_row[0])
-                                                print("Unexpected case")  # debug only
+                                            break
+                                        print(form_row[0])
+                                        print("Unexpected case")  # debug only
                                     except ValueError:
                                         continue
                                     except TypeError:
