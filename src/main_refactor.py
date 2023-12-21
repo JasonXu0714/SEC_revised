@@ -14,7 +14,7 @@ keywords = config.Intangible_keywords
 def process_attachments(results_df, year, stored_attachments, filing_10k_by_year):
     for i, filing in enumerate(filing_10k_by_year[year]):
         if i > 3:
-            break  # debug few filings
+            break
         new_row = process_filing(filing, stored_attachments, i)
         if len(new_row) > 0:
             results_df = pd.concat(
@@ -102,7 +102,7 @@ def process_list_df(
             intangible_table_cnt += 1
             intangible_asset_form = form_df
             export_dataframe.output_to_csv(
-                form_df, f"intangible_{filing_index}_{intangible_table_cnt}.csv"
+                form_df, f"intangible/{filing_date}_{cik}_{intangible_table_cnt}.csv"
             )
 
     if not intangible_asset_form.empty:

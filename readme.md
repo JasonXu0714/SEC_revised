@@ -12,3 +12,6 @@ export_dataframe.py: export result dataframe to desired format
  python main.py 
 '''
 
+#todo
+2. csv extractor 
+
