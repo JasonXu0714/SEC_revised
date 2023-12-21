@@ -1,4 +1,5 @@
 import re
+import config
 
 
 def contains_trade_secret_column(df):
@@ -23,9 +24,8 @@ def contains_trade_secret_column(df):
     return result
 
 
-def contains_trade_secret(content):
-    # Check if 'trade secret' or 'trade secrecy' is in the content
-    return "trade secret" in content.lower() or "trade secrecy" in content.lower()
+def contains_trade_secret(keywords, content):
+    return any(keyword in content.lower() for keyword in keywords)
 
 
 def find_secret(keywords, text):
