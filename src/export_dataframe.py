@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 
 def create_new_row(
@@ -17,4 +18,6 @@ def create_new_row(
 
 
 def output_to_csv(df, filename):
-    df.to_csv(filename, index=False)
+    pwd = os.getcwd()
+    file_path = f"{pwd}/../data/{filename}"
+    df.to_csv(file_path, index=False)
