@@ -14,8 +14,8 @@ keywords = config.Intangible_keywords
 def process_attachments(results_df, year, stored_attachments, filing_10k_by_year):
     for i, filing in enumerate(filing_10k_by_year[year]):
         if i > 3:
-            break
-        new_row = process_filing(filing, stored_attachments)
+            break  # debug few filings
+        new_row = process_filing(filing, stored_attachments, i)
         if len(new_row) > 0:
             results_df = pd.concat(
                 [results_df, pd.DataFrame([new_row])], ignore_index=True
@@ -23,7 +23,7 @@ def process_attachments(results_df, year, stored_attachments, filing_10k_by_year
     return results_df
 
 
-def process_filing(filing, stored_attachments):
+def process_filing(filing, stored_attachments, filling_index):
     filing_date = filing.filing_date
     cik = filing.cik
     company_name = filing.company
@@ -32,6 +32,7 @@ def process_filing(filing, stored_attachments):
     accession_no = filing.accession_no
     if filing.attachments:
         return process_attachment(
+            filling_index,
             filing,
             stored_attachments,
             indicator,
@@ -44,6 +45,7 @@ def process_filing(filing, stored_attachments):
 
 
 def process_attachment(
+    filing_index,
     filing,
     stored_attachments,
     indicator,
@@ -69,21 +71,40 @@ def process_attachment(
         list_df = []
 
     return process_list_df(
-        list_df, indicator, url, accession_no, company_name, filing_date, cik
+        filing_index,
+        list_df,
+        indicator,
+        url,
+        accession_no,
+        company_name,
+        filing_date,
+        cik,
     )
 
 
 def process_list_df(
-    list_df, indicator, url, accession_no, company_name, filing_date, cik
+    filing_index,
+    list_df,
+    indicator,
+    url,
+    accession_no,
+    company_name,
+    filing_date,
+    cik,
 ):
     intangible_asset_form = pd.DataFrame()
+    intangible_table_cnt = 0
     for form_df in list_df:
         texts = form_df.to_markdown()
-        match = secret_finder.find_secret(keywords, texts)
-        if match:
+        find_match = secret_finder.find_secret(keywords, texts)
+
+        if find_match:
+            intangible_table_cnt += 1
             intangible_asset_form = form_df
-            export_dataframe.output_to_csv(form_df, "test.csv")
-            break
+            export_dataframe.output_to_csv(
+                form_df, f"intangible_{filing_index}_{intangible_table_cnt}.csv"
+            )
+
     if not intangible_asset_form.empty:
         return process_target_form(
             intangible_asset_form,
