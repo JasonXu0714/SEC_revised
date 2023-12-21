@@ -8,12 +8,13 @@ from io import StringIO
 from edgar import *
 from tqdm import tqdm
 
-# keywords = ["secre", "know", "intellect", "confiden", "proprie"]
-keywords = ["trade secre"]
+keywords = config.Intangible_keywords
 
 
 def process_attachments(results_df, year, stored_attachments, filing_10k_by_year):
-    for _, filing in enumerate(filing_10k_by_year[year]):
+    for i, filing in enumerate(filing_10k_by_year[year]):
+        if i > 3:
+            break
         new_row = process_filing(filing, stored_attachments)
         if len(new_row) > 0:
             results_df = pd.concat(
@@ -59,7 +60,7 @@ def process_attachment(
         url = first_attachment_url
         s = StringIO(content)
         list_df = pd.read_html(s)
-        if secret_finder.contains_trade_secret(content):
+        if secret_finder.contains_trade_secret(keywords, content):
             indicator = 1
     except Exception as e:
         print(
@@ -75,16 +76,17 @@ def process_attachment(
 def process_list_df(
     list_df, indicator, url, accession_no, company_name, filing_date, cik
 ):
-    target_trade_secret_form = None
+    intangible_asset_form = pd.DataFrame()
     for form_df in list_df:
         texts = form_df.to_markdown()
         match = secret_finder.find_secret(keywords, texts)
         if match:
-            target_trade_secret_form = form_df
+            intangible_asset_form = form_df
+            export_dataframe.output_to_csv(form_df, "test.csv")
             break
-    if target_trade_secret_form is not None:
+    if not intangible_asset_form.empty:
         return process_target_form(
-            target_trade_secret_form,
+            intangible_asset_form,
             indicator,
             url,
             accession_no,
