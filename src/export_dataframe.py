@@ -17,7 +17,6 @@ def create_new_row(
     return new_row
 
 
-def output_to_csv(df, filename):
-    pwd = os.getcwd()
-    file_path = f"{pwd}/../data/{filename}"
+def output_to_csv(df, data_path, folder, filename):
+    file_path = os.path.join(data_path, folder, filename)
     df.to_csv(file_path, index=False)
