@@ -13,8 +13,6 @@ keywords = config.Intangible_keywords
 
 def process_attachments(results_df, year, stored_attachments, filing_10k_by_year):
     for i, filing in enumerate(filing_10k_by_year[year]):
-        if i > 3:
-            break
         new_row = process_filing(filing, stored_attachments, i)
         if len(new_row) > 0:
             results_df = pd.concat(
@@ -83,7 +81,6 @@ def process_attachment(
 
 
 def process_list_df(
-    filing_index,
     list_df,
     indicator,
     url,
@@ -102,7 +99,9 @@ def process_list_df(
             intangible_table_cnt += 1
             intangible_asset_form = form_df
             export_dataframe.output_to_csv(
-                form_df, f"intangible/{filing_date}_{cik}_{intangible_table_cnt}.csv"
+                form_df,
+                folder="intangible",
+                filename=f"{filing_date}_{cik}_{intangible_table_cnt}.csv",
             )
 
     if not intangible_asset_form.empty:
@@ -154,11 +153,13 @@ def process_target_form(
     )
 
 
-def sec_helper(start_year, end_year, file_name, filing_10k_by_year):
+def sec_helper(start_year, end_year, file_name, filing_10k_by_year, redownload=False):
     results_df = pd.DataFrame(columns=config.COLUMN_NAMES)
-    # file_preprocessor.download_files(
-    #     start_year, end_year, filing_10k_by_year, file_name
-    # )
+    if redownload:
+        file_preprocessor.download_files(
+            start_year, end_year, filing_10k_by_year, file_name
+        )
+
     for year in range(start_year, end_year + 1):
         stored_attachments = file_preprocessor.load_attachments(file_name, year)
         results_df = process_attachments(
@@ -177,4 +178,4 @@ if __name__ == "__main__":
     )
 
     df = sec_helper(start_year, end_year, filename, filling_10k_by_year)
-    export_dataframe.output_to_csv(df, f"{filename}:{start_year}-{end_year}.csv")
+    # export_dataframe.output_to_csv(df, f"{filename}:{start_year}-{end_year}.csv")
