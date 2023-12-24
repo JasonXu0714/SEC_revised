@@ -49,5 +49,7 @@ COLUMN_NAMES = [
 #     "Customer lists and distribution agreements",
 # ]
 
-# Intangible_keywords = ["intangible assets", "intangibles"]
-Intangible_keywords = ["intangible assets"]
+Intangible_keywords = [
+    "intangible assets",
+    "intangible",
+]
