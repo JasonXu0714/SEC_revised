@@ -3,9 +3,13 @@ import numpy as np
 import os
 import sys
 
-sys.path.append("/Users/yanzhe.li/Documents/sec_webscraping/src")
+
+# add src to sys path and import customize package
+pwd = os.getcwd()
+root_directory = os.path.abspath(os.path.join(pwd, "../../"))
+sys.path.append(root_directory)
 import config
-import export_dataframe
+import src.export_dataframe as export_dataframe
 
 
 def is_number(s):
@@ -23,13 +27,13 @@ def get_first_number(series):
     return np.nan
 
 
-def csv_runner(csv_dir, keywords):
+def csv_runner(csv_dir, data_dir, keywords, folder="extracted_csv"):
     all_csv_files = os.listdir(csv_dir)
     for file in all_csv_files:
         df = pd.read_csv(os.path.join(csv_dir, file))
         result_df = extract_intangile_form(df, keywords)
-        result_df.to_csv(
-            f"/Users/yanzhe.li/Documents/sec_webscraping/data/extracted_csv/{file}"
+        export_dataframe.output_to_csv(
+            result_df, data_dir, folder=folder, filename=file
         )
 
 
@@ -41,8 +45,10 @@ def extract_intangile_form(original_df, keywords):
 
 
 if __name__ == "__main__":
-    data_dir = "/Users/yanzhe.li/Documents/sec_webscraping/data"
+    current_dir = os.getcwd()
+    root_directory = os.path.abspath(os.path.join(current_dir, "../.."))
+    data_dir = os.path.join(root_directory, "data")
     target_dir = "test"
     csv_dir = os.path.join(data_dir, target_dir)
     keywords = config.Intangible_keywords
-    csv_runner(csv_dir, keywords)
+    csv_runner(csv_dir, data_dir, keywords)
