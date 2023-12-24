@@ -1,5 +1,4 @@
 import re
-import config
 
 
 def contains_trade_secret_column(df):

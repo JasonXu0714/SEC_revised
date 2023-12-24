@@ -1,12 +1,18 @@
 import pandas as pd
 import polars as pl
-import config
 import secret_finder
 import file_preprocessor
 import export_dataframe
+import os
+import sys
 from io import StringIO
 from edgar import *
-from tqdm import tqdm
+
+# from .. import config
+pwd = os.getcwd()
+root_directory = os.path.abspath(os.path.join(pwd, ".."))
+sys.path.append(root_directory)
+import config
 
 keywords = config.Intangible_keywords
 
@@ -30,7 +36,6 @@ def process_filing(filing, stored_attachments, filling_index):
     accession_no = filing.accession_no
     if filing.attachments:
         return process_attachment(
-            filling_index,
             filing,
             stored_attachments,
             indicator,
@@ -43,7 +48,6 @@ def process_filing(filing, stored_attachments, filling_index):
 
 
 def process_attachment(
-    filing_index,
     filing,
     stored_attachments,
     indicator,
@@ -69,7 +73,6 @@ def process_attachment(
         list_df = []
 
     return process_list_df(
-        filing_index,
         list_df,
         indicator,
         url,
@@ -100,6 +103,7 @@ def process_list_df(
             intangible_asset_form = form_df
             export_dataframe.output_to_csv(
                 form_df,
+                data_path=os.path.join(root_directory, "data"),
                 folder="intangible",
                 filename=f"{filing_date}_{cik}_{intangible_table_cnt}.csv",
             )
@@ -171,8 +175,8 @@ def sec_helper(start_year, end_year, file_name, filing_10k_by_year, redownload=F
 if __name__ == "__main__":
     set_identity("jason.xu071498@gmail.com")
     start_year, end_year = config.START_YEAR, config.END_YEAR
-
     filename = config.FILE_NAME
+
     filling_10k_by_year = file_preprocessor.filter_filling_by_year(
         start_year, end_year, slice=50
     )
