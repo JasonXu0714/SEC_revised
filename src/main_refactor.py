@@ -8,26 +8,26 @@ import sys
 from io import StringIO
 from edgar import *
 
-# from .. import config
-pwd = os.getcwd()
-root_directory = os.path.abspath(os.path.join(pwd, ".."))
-sys.path.append(root_directory)
+# pwd = os.getcwd()
+# root_directory = os.path.abspath(os.path.join(pwd, ".."))
+# sys.path.append(root_directory)
 import config
 
 keywords = config.Intangible_keywords
 
 
 def process_attachments(results_df, year, stored_attachments, filing_10k_by_year):
-    for i, filing in enumerate(filing_10k_by_year[year]):
-        new_row = process_filing(filing, stored_attachments, i)
-        if len(new_row) > 0:
+    for _, filing in enumerate(filing_10k_by_year[year]):
+        new_row = process_filing(filing, stored_attachments)
+        # if len(new_row) > 0:
+        if new_row and any(new_row.values()):
             results_df = pd.concat(
                 [results_df, pd.DataFrame([new_row])], ignore_index=True
             )
     return results_df
 
 
-def process_filing(filing, stored_attachments, filling_index):
+def process_filing(filing, stored_attachments):
     filing_date = filing.filing_date
     cik = filing.cik
     company_name = filing.company
@@ -103,7 +103,7 @@ def process_list_df(
             intangible_asset_form = form_df
             export_dataframe.output_to_csv(
                 form_df,
-                data_path=os.path.join(root_directory, "data"),
+                data_path=os.path.join(config.root_directory, "data"),
                 folder="intangible",
                 filename=f"{filing_date}_{cik}_{intangible_table_cnt}.csv",
             )
