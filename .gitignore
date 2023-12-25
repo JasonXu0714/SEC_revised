@@ -5,3 +5,5 @@ __pycache__/
 #outout file
 *.csv
 *.zip
+#virtual env
+venv/
