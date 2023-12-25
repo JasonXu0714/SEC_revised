@@ -7,11 +7,5 @@ secret_finder.py: search for the target(secret) within various data stricture(st
 export_dataframe.py: export result dataframe to desired format
 
 # Execution  
-'''
- cd <src> (directory where main.py resides)
- python main.py 
-'''
-
-#todo
-2. csv extractor 
+make all
 
