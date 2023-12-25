@@ -19,11 +19,9 @@ keywords = config.Intangible_keywords
 def process_attachments(results_df, year, stored_attachments, filing_10k_by_year):
     for _, filing in enumerate(filing_10k_by_year[year]):
         new_row = process_filing(filing, stored_attachments)
-        # if len(new_row) > 0:
         if new_row and any(new_row.values()):
-            results_df = pd.concat(
-                [results_df, pd.DataFrame([new_row])], ignore_index=True
-            )
+            new_df = pd.DataFrame([new_row]).dropna(how="all", axis=1)
+            results_df = pd.concat([results_df, new_df], ignore_index=True)
     return results_df
 
 
