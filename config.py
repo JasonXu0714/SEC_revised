@@ -1,3 +1,5 @@
+import os
+
 START_YEAR = 2016
 END_YEAR = 2016
 FILE_NAME = "filing_attachment"
@@ -53,3 +55,4 @@ Intangible_keywords = [
     "intangible assets",
     "intangible",
 ]
+root_directory = os.getcwd()
