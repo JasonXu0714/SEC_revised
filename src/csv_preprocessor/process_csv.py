@@ -4,9 +4,9 @@ import os
 import sys
 
 # add src to sys path and import customize package
-pwd = os.getcwd()
-root_directory = os.path.abspath(os.path.join(pwd, "../../"))
-sys.path.append(root_directory)
+# pwd = os.getcwd()
+# root_directory = os.path.abspath(os.path.join(pwd, "../../"))
+# sys.path.append(root_directory)
 import config
 import src.export_dataframe as export_dataframe
 
@@ -45,13 +45,15 @@ def extract_intangile_form(original_df, intangible_col="intangible asset value")
 
 if __name__ == "__main__":
     current_dir = os.getcwd()
-    root_directory = os.path.abspath(os.path.join(current_dir, "../.."))
+    root_directory = config.root_directory
     data_dir = os.path.join(root_directory, "data")
     # test/intangible dir
     target_dir = "test"
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 1 and sys.argv[1] == "intangible":
         target_dir = sys.argv[1]
-
+    else:
+        print("invalid data directory!")
+        sys.exit(1)
     csv_dir = os.path.join(data_dir, target_dir)
     keywords = config.Intangible_keywords
     csv_runner(csv_dir, data_dir)
