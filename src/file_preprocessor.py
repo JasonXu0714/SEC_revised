@@ -28,7 +28,7 @@ def download_attachments(filing_10k_by_year, file_name, year):
 
 def load_attachments(file_name, year):
     # Open the specified file in read-binary mode.
-    with open(f"../data/attchment/{file_name}_{year}.pkl", "rb") as file:
+    with open(f"data/attchment/{file_name}_{year}.pkl", "rb") as file:
         loaded_data = pickle.load(file)
         return loaded_data
 
