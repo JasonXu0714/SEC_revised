@@ -3,7 +3,7 @@ export PYTHONPATH := $(shell pwd)
 .PHONY: all setup pull_intangible_form process_csv clean
 
 all: setup pull_intangible_form process_csv clean
-
+run_all: setup process_csv csv_word_count clean
 setup:
 	@echo "Moving to main branch"
 	git switch main
@@ -19,7 +19,8 @@ pull_intangible_form:
 process_csv:
 	echo "Extracting numerical records related with intangible assets"
 	venv/bin/python src/csv_preprocessor/process_csv.py "intangible"
-
+csv_word_count:
+	venv/bin/python src/text_processor/frequency_count_csv.py  "extracted_csv"
 clean:
 	@echo "Cleaning up..."
 	@echo "Removing virtual environment..."
