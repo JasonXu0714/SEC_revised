@@ -3,8 +3,8 @@ import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
 
-START_YEAR = 2016
-END_YEAR = 2016
+START_YEAR = 2017
+END_YEAR = 2017
 FILE_NAME = "filing_attachments"
 COLUMN_NAMES = [
     "company_name",
