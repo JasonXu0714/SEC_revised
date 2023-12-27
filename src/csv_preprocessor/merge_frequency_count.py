@@ -10,9 +10,8 @@ def merge_frequency_count(
     all_csv_files = os.listdir(csv_dir)
     dataframes = [pd.read_csv(os.path.join(csv_dir, f)) for f in all_csv_files]
     combined = pd.concat(dataframes)
-    print(combined)
     result = combined.groupby("word")["count"].sum().reset_index()
-    result = result[~result["word"].str.isnumeric()]
+    result = result[~result["word"].apply(lambda x: x.replace(" ", "").isnumeric())]
     result = result.sort_values("count", ascending=False)
     export_dataframe.output_to_csv(result, data_dir, folder=folder, filename=filename)
 
