@@ -2,7 +2,7 @@ SHELL := /bin/bash
 export PYTHONPATH := $(shell pwd)
 .PHONY: all setup pull_intangible_form process_csv clean
 DARA_DIRS=attchment csv_to_extract extracted_csv frequency_count frequency_merged intangible test test_count test_merge
-all: setup pull_intangible_form process_csv clean
+
 setup:
 	@echo "Moving to main branch"
 	git switch main
