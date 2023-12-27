@@ -1,8 +1,11 @@
 import os
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
 
 START_YEAR = 2016
 END_YEAR = 2016
-FILE_NAME = "filing_attachment"
+FILE_NAME = "filing_attachments"
 COLUMN_NAMES = [
     "company_name",
     "filing_date",
