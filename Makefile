@@ -23,7 +23,7 @@ process_csv:
 csv_word_count:
 	venv/bin/python src/text_processor/frequency_count_csv.py  "extracted_csv"
 merge_frequency_count:
-	venv/bin/python src/csv_preprocessor/merge_frequency_count.py
+	venv/bin/python src/csv_preprocessor/merge_frequency_count.py "frequency_count"
 clean:
 	@echo "Cleaning up..."
 	@echo "Removing virtual environment..."
