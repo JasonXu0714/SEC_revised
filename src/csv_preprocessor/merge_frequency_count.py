@@ -1,4 +1,5 @@
 import pandas as pd
+import sys
 import os
 import src.export_dataframe as export_dataframe
 import config
@@ -21,5 +22,7 @@ if __name__ == "__main__":
     root_directory = config.root_directory
     data_dir = os.path.join(root_directory, "data")
     target_dir = "test_merge"
+    if len(sys.argv) > 1 and sys.argv[1] == "frequency_count":
+        target_dir = sys.argv[1]
     csv_dir = os.path.join(data_dir, target_dir)
     merge_frequency_count(csv_dir, data_dir)
