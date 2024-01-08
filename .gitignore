@@ -2,6 +2,7 @@
 __pycache__/
 #download file
 *.pkl
+*.txt
 #outout file
 *.csv
 *.zip
@@ -9,3 +10,5 @@ __pycache__/
 venv/
 #filing document
 *.pkl
+#mac file
+.DS_Store
