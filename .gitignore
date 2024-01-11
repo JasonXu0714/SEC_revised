@@ -3,6 +3,7 @@ __pycache__/
 #download file
 *.pkl
 *.txt
+*.html
 #outout file
 *.csv
 *.zip
