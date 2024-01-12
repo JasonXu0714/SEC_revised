@@ -3,6 +3,7 @@ import polars as pl
 import src.secret_finder as secret_finder
 import src.export_dataframe as export_dataframe
 import os
+import multiprocessing
 
 
 import config
@@ -10,15 +11,18 @@ import config
 keywords = config.Intangible_keywords
 
 
-def read_html_file(html_dir):
+def html_runner(html_dir):
     html_files = os.listdir(html_dir)
-    for html_file in html_files:
-        try:
-            list_df = pd.read_html(os.path.join(html_dir, html_file))
-        except ValueError as e:
-            print(e)
-            continue
-        process_list_df(list_df, html_file)
+    p = multiprocessing.Pool()
+    p.starmap(read_html_file, [(html_dir, filename) for filename in html_files])
+
+
+def read_html_file(html_dir, filename):
+    try:
+        list_df = pd.read_html(os.path.join(html_dir, filename))
+    except ValueError as e:
+        print(e)
+    process_list_df(list_df, filename)
 
 
 def process_list_df(list_df, file_name):
@@ -29,7 +33,7 @@ def process_list_df(list_df, file_name):
             export_dataframe.output_to_csv(
                 form_df,
                 data_path=os.path.join(config.root_directory, "data"),
-                folder="intangible_local",
+                folder="test_intangible",
                 filename=file_name.replace("txt", "csv"),
             )
 
@@ -39,4 +43,4 @@ if __name__ == "__main__":
     data_dir = os.path.join(root_directory, "data")
     target_dir = "first_html"
     html_dir = os.path.join(data_dir, target_dir)
-    read_html_file(html_dir)
+    html_runner(html_dir)
