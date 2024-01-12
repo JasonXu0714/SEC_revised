@@ -39,7 +39,6 @@ def process_list_df(
         if find_match:
             export_dataframe.output_to_csv(
                 form_df,
-                data_path=os.path.join(config.root_directory, "data"),
                 folder=output_folder,
                 filename=file_name.replace("txt", "csv"),
             )

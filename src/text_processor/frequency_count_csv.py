@@ -17,7 +17,7 @@ def frequency_count_dataframe(df):
     return Counter(map(str.lower, grams))
 
 
-def frequency_count_runner(csv_dir, data_dir, columns, folder="frequency_count"):
+def frequency_count_runner(csv_dir, columns, folder="frequency_count"):
     """
     Input:Dir of extracted csv
     Output: list -> dataframe -> csv
@@ -30,9 +30,7 @@ def frequency_count_runner(csv_dir, data_dir, columns, folder="frequency_count")
             continue
         result_df = pd.DataFrame.from_dict(count_dict, orient="index").reset_index()
         result_df.columns = columns
-        export_dataframe.output_to_csv(
-            result_df, data_dir, folder=folder, filename=file
-        )
+        export_dataframe.output_to_csv(result_df, folder=folder, filename=file)
 
 
 if __name__ == "__main__":
@@ -41,4 +39,4 @@ if __name__ == "__main__":
     data_dir = os.path.join(root_directory, "data")
     src_dir, dest_dir = sys.argv[1:]
     csv_dir = os.path.join(data_dir, src_dir)
-    frequency_count_runner(csv_dir, data_dir, columns=columns, folder=dest_dir)
+    frequency_count_runner(csv_dir, columns=columns, folder=dest_dir)

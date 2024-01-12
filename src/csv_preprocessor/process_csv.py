@@ -2,11 +2,7 @@ import pandas as pd
 import numpy as np
 import os
 import sys
-
-# add src to sys path and import customize package
-# pwd = os.getcwd()
-# root_directory = os.path.abspath(os.path.join(pwd, "../../"))
-# sys.path.append(root_directory)
+import multiprocessing
 import config
 import src.export_dataframe as export_dataframe
 
@@ -26,14 +22,24 @@ def get_first_number(series):
     return np.nan
 
 
-def csv_runner(csv_dir, data_dir, folder="extracted_csv"):
+def csv_runner(csv_dir, folder="extracted_csv"):
     all_csv_files = os.listdir(csv_dir)
+    p = multiprocessing.Pool()
     for file in all_csv_files:
         df = pd.read_csv(os.path.join(csv_dir, file))
         result_df = extract_intangile_form(df)
+        export_dataframe.output_to_csv(result_df, folder=folder, filename=file)
+
+
+def csv_reader_writer(csv_dir, output_folder, filename):
+    try:
+        df = pd.read_csv(os.path.join(csv_dir, filename))
+        result_df = extract_intangile_form(df)
         export_dataframe.output_to_csv(
-            result_df, data_dir, folder=folder, filename=file
+            result_df, folder=output_folder, filename=filename
         )
+    except (IOError, ValueError) as e:
+        print(e)
 
 
 def extract_intangile_form(original_df, intangible_col="intangible asset value"):
@@ -48,4 +54,4 @@ if __name__ == "__main__":
     data_dir = os.path.join(root_directory, "data")
     src_dir, dest_dir = sys.argv[1:]
     csv_dir = os.path.join(data_dir, src_dir)
-    csv_runner(csv_dir, data_dir, folder=dest_dir)
+    csv_runner(csv_dir, folder=dest_dir)

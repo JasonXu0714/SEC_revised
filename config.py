@@ -154,3 +154,4 @@ Intangible_keywords = ["intangible"]
 
 
 root_directory = os.getcwd()
+data_directory = os.path.join(root_directory, "data")

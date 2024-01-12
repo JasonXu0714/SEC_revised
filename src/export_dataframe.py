@@ -1,5 +1,8 @@
 import pandas as pd
+import config
 import os
+
+data_path = config.data_directory
 
 
 def create_new_row(
@@ -17,6 +20,6 @@ def create_new_row(
     return new_row
 
 
-def output_to_csv(df, data_path, folder, filename):
-    file_path = os.path.join(data_path, folder, filename)
+def output_to_csv(df, folder, filename, data_dir=data_path):
+    file_path = os.path.join(data_dir, folder, filename)
     df.to_csv(file_path, index=False)
