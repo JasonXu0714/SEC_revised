@@ -37,11 +37,8 @@ def frequency_count_runner(csv_dir, data_dir, columns, folder="frequency_count")
 
 if __name__ == "__main__":
     columns = ["word", "count"]
-    current_dir = os.getcwd()
     root_directory = config.root_directory
     data_dir = os.path.join(root_directory, "data")
-    target_dir = "test_count"
-    if len(sys.argv) > 1 and sys.argv[1] == "extracted_csv":
-        target_dir = sys.argv[1]
-    csv_dir = os.path.join(data_dir, target_dir)
-    frequency_count_runner(csv_dir, data_dir, columns=columns, folder="frequency_count")
+    src_dir, dest_dir = sys.argv[1:]
+    csv_dir = os.path.join(data_dir, src_dir)
+    frequency_count_runner(csv_dir, data_dir, columns=columns, folder=dest_dir)

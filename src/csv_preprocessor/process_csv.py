@@ -44,16 +44,8 @@ def extract_intangile_form(original_df, intangible_col="intangible asset value")
 
 
 if __name__ == "__main__":
-    current_dir = os.getcwd()
     root_directory = config.root_directory
     data_dir = os.path.join(root_directory, "data")
-    # test/intangible dir
-    target_dir = "test"
-    if len(sys.argv) > 1 and sys.argv[1] == "intangible":
-        target_dir = sys.argv[1]
-    else:
-        print("invalid data directory!")
-        sys.exit(1)
-    csv_dir = os.path.join(data_dir, target_dir)
-    keywords = config.Intangible_keywords
-    csv_runner(csv_dir, data_dir)
+    src_dir, dest_dir = sys.argv[1:]
+    csv_dir = os.path.join(data_dir, src_dir)
+    csv_runner(csv_dir, data_dir, folder=dest_dir)

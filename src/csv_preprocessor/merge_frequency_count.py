@@ -5,9 +5,7 @@ import src.export_dataframe as export_dataframe
 import config
 
 
-def merge_frequency_count(
-    csv_dir, data_dir, folder="frequency_merged", filename="merged.csv"
-):
+def merge_frequency_count(csv_dir, data_dir, folder, filename="merged.csv"):
     all_csv_files = os.listdir(csv_dir)
     dataframes = [pd.read_csv(os.path.join(csv_dir, f)) for f in all_csv_files]
     combined = pd.concat(dataframes)
@@ -18,11 +16,8 @@ def merge_frequency_count(
 
 
 if __name__ == "__main__":
-    current_dir = os.getcwd()
     root_directory = config.root_directory
     data_dir = os.path.join(root_directory, "data")
-    target_dir = "test_merge"
-    if len(sys.argv) > 1 and sys.argv[1] == "frequency_count":
-        target_dir = sys.argv[1]
-    csv_dir = os.path.join(data_dir, target_dir)
-    merge_frequency_count(csv_dir, data_dir)
+    src_dir, dest_dir = sys.argv[1:]
+    csv_dir = os.path.join(data_dir, src_dir)
+    merge_frequency_count(csv_dir, data_dir, folder=src_dir)
