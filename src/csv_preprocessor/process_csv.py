@@ -22,13 +22,13 @@ def get_first_number(series):
     return np.nan
 
 
-def csv_runner(csv_dir, folder="extracted_csv"):
+def csv_runner(csv_dir, output_folder="extracted_csv"):
     all_csv_files = os.listdir(csv_dir)
     p = multiprocessing.Pool()
-    for file in all_csv_files:
-        df = pd.read_csv(os.path.join(csv_dir, file))
-        result_df = extract_intangile_form(df)
-        export_dataframe.output_to_csv(result_df, folder=folder, filename=file)
+    p.starmap(
+        csv_reader_writer,
+        [(csv_dir, output_folder, filename) for filename in all_csv_files],
+    )
 
 
 def csv_reader_writer(csv_dir, output_folder, filename):
@@ -54,4 +54,4 @@ if __name__ == "__main__":
     data_dir = os.path.join(root_directory, "data")
     src_dir, dest_dir = sys.argv[1:]
     csv_dir = os.path.join(data_dir, src_dir)
-    csv_runner(csv_dir, folder=dest_dir)
+    csv_runner(csv_dir, output_folder=dest_dir)
