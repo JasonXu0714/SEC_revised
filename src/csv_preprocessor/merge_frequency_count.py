@@ -20,4 +20,4 @@ if __name__ == "__main__":
     data_dir = os.path.join(root_directory, "data")
     src_dir, dest_dir = sys.argv[1:]
     csv_dir = os.path.join(data_dir, src_dir)
-    merge_frequency_count(csv_dir, data_dir, folder=src_dir)
+    merge_frequency_count(csv_dir, data_dir, folder=dest_dir)
