@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 export PYTHONPATH := $(shell pwd)
 .PHONY: all setup pull_intangible_form process_csv clean
-DARA_DIRS=attchment csv_to_extract extracted_csv frequency_count frequency_merged intangible test test_count test_merge
+DARA_DIRS=intangible_local attchment csv_to_extract extracted_csv frequency_count frequency_merged intangible test test_count test_merge
 
 setup:
 	@echo "Moving to main branch"
@@ -15,7 +15,7 @@ creat_dir:
 	mkdir -p $(addprefix data/,$(DARA_DIRS))
 pull_intangible_form:
 	echo "Running script to pull forms containing intangible asset ..."
-	venv/bin/python src/main_refactor.py
+	venv/bin/python src/html_processor/retrive_intangible_table.py
 
 process_csv:
 	echo "Extracting numerical records related with intangible assets"
