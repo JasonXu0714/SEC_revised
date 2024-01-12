@@ -13,7 +13,6 @@ keywords = config.Intangible_keywords
 def read_html_file(html_dir):
     html_files = os.listdir(html_dir)
     for html_file in html_files:
-        print(html_file)
         try:
             list_df = pd.read_html(os.path.join(html_dir, html_file))
         except ValueError as e:
@@ -36,5 +35,8 @@ def process_list_df(list_df, file_name):
 
 
 if __name__ == "__main__":
-    html_dir = "/Users/yanzhe.li/Documents/finance/sec_clean/data/first_html"
+    root_directory = config.root_directory
+    data_dir = os.path.join(root_directory, "data")
+    target_dir = "first_html"
+    html_dir = os.path.join(data_dir, target_dir)
     read_html_file(html_dir)
