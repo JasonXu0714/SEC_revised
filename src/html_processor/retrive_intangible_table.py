@@ -25,6 +25,7 @@ def read_html_file(html_dir, output_folder, filename):
         list_df = pd.read_html(os.path.join(html_dir, filename))
     except ValueError as e:
         print(e)
+        return
     process_list_df(list_df, output_folder, filename)
 
 
