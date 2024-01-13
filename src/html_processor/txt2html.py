@@ -21,6 +21,11 @@ def read_str(file_path, encoding="latin1"):
 
 
 # process(file_path):
+def is_annual_report(file_path):
+    """sampel input /...../filename.txt"""
+    file_name = file_path.split("/")[-1]
+    filing_type = file_name.split("_")[1]
+    return "K" in filing_type
 
 
 # Takes a file path, reads its content, and looks for specific HTML tags (</html>, </document>, </xbrl>).
@@ -35,6 +40,10 @@ def process(file_path):
     Processes each file to extract HTML content and convert it to text.
     Saves the converted text in a specified directory.
     """
+    # won't process 10q file
+    if not is_annual_report(file_path):
+        print(file_path)
+        return
     output_path = Path(file_path.replace("raw_data", "first_html"))
     output_path.parent.mkdir(exist_ok=True, parents=True)
 
@@ -57,7 +66,7 @@ def main():
     """
     Main function to process files in parallel using multiprocessing.
     """
-    file_paths = glob("/Users/yanzhe.li/Documents/finance/sec_clean/data/raw_data/*")
+    file_paths = glob("/Users/yanzhe.li/Documents/sec_webscraping/data/raw_data/*")
 
     with Pool(20) as pool:
         with tqdm(total=len(file_paths)) as progress_bar:
