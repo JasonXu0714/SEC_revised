@@ -42,17 +42,20 @@ def process(file_path):
     """
     # won't process 10q file
     if not is_annual_report(file_path):
-        print(file_path)
         return
     output_path = Path(file_path.replace("raw_data", "first_html"))
     output_path.parent.mkdir(exist_ok=True, parents=True)
 
     html_content = []
+    html_found = False
     for line in read_str(file_path):
         html_content.append(line)
         if any(tag in line.lower() for tag in ["</html>", "</document>", "</xbrl>"]):
+            html_found = True
             break
-
+    if not html_found:
+        print(f"No HTML code found in file {file_path}. Skipping processing.")
+        return
     try:
         #         converted_text = html2text("\n".join(html_content))
         converted_text = "\n".join(html_content)
