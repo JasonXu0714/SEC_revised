@@ -69,6 +69,7 @@ def main():
     """
     Main function to process files in parallel using multiprocessing.
     """
+    # don't forget to replace file path with your original data path(txt file)
     file_paths = glob("/Users/yanzhe.li/Documents/sec_webscraping/data/raw_data/*")
 
     with Pool(20) as pool:
