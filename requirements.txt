@@ -20,6 +20,7 @@ executing==2.0.1
 fastcore==1.5.29
 filetype==1.2.0
 h11==0.14.0
+html2text==2020.1.16
 html5lib==1.1
 httpcore==1.0.2
 httpx==0.25.2
