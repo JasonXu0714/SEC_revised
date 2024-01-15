@@ -5,6 +5,7 @@ import src.export_dataframe as export_dataframe
 import os
 import sys
 import multiprocessing
+from src.time.timer import Timer
 
 
 import config
@@ -46,8 +47,12 @@ def process_list_df(
 
 
 if __name__ == "__main__":
+    timer = Timer()
+    timer.start()
     root_directory = config.root_directory
     data_dir = os.path.join(root_directory, "data")
     src_dir, dest_dir = sys.argv[1:]
     html_dir = os.path.join(data_dir, src_dir)
     html_runner(html_dir, output_folder=dest_dir)
+    timer.stop()
+    print(f"Elapsed time: {timer.elapsed_time()} seconds")
