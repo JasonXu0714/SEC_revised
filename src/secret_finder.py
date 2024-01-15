@@ -28,13 +28,11 @@ def contains_trade_secret(keywords, content):
 
 
 def find_secret(keywords, text):
-    matches = []
     for keyword in keywords:
-        match = re.findall(
+        if re.findall(
             r"[\w\s]*" + re.escape(keyword) + r"[\w\s]*",
             text,
             re.IGNORECASE,
-        )
-        if match:
-            matches.extend(match)
-    return len(matches) > 0
+        ):
+            return True
+    return False
