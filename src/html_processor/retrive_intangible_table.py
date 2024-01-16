@@ -5,10 +5,9 @@ import src.export_dataframe as export_dataframe
 import os
 import sys
 import multiprocessing
-from src.time.timer import Timer
-
-
 import config
+from tqdm import tqdm
+from src.time.timer import Timer
 
 keywords = config.Intangible_keywords
 
@@ -16,9 +15,12 @@ keywords = config.Intangible_keywords
 def html_runner(html_dir, output_folder):
     html_files = os.listdir(html_dir)
     p = multiprocessing.Pool()
-    p.starmap(
-        read_html_file, [(html_dir, output_folder, filename) for filename in html_files]
-    )
+    with tqdm(total=len(html_files)) as progress_bar:
+        for _ in p.starmap(
+            read_html_file,
+            [(html_dir, output_folder, filename) for filename in html_files],
+        ):
+            progress_bar.update(1)
 
 
 def read_html_file(html_dir, output_folder, filename):
@@ -35,15 +37,19 @@ def process_list_df(
     output_folder,
     file_name,
 ):
+    form_number = 0
     for form_df in list_df:
         texts = form_df.to_markdown()
         find_match = secret_finder.find_secret(keywords, texts)
         if find_match:
+            file_name_without_extension = file_name.split(".")[0]
+            file_name_with_index = file_name_without_extension + f"_{form_number}.csv"
             export_dataframe.output_to_csv(
                 form_df,
                 folder=output_folder,
-                filename=file_name.replace("txt", "csv"),
+                filename=file_name_with_index,
             )
+            form_number += 1
 
 
 if __name__ == "__main__":
