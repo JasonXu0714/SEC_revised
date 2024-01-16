@@ -5,10 +5,9 @@ import src.export_dataframe as export_dataframe
 import os
 import sys
 import multiprocessing
-from src.time.timer import Timer
-
-
 import config
+from tqdm import tqdm
+from src.time.timer import Timer
 
 keywords = config.Intangible_keywords
 
@@ -16,9 +15,12 @@ keywords = config.Intangible_keywords
 def html_runner(html_dir, output_folder):
     html_files = os.listdir(html_dir)
     p = multiprocessing.Pool()
-    p.starmap(
-        read_html_file, [(html_dir, output_folder, filename) for filename in html_files]
-    )
+    with tqdm(total=len(html_files)) as progress_bar:
+        for _ in p.starmap(
+            read_html_file,
+            [(html_dir, output_folder, filename) for filename in html_files],
+        ):
+            progress_bar.update(1)
 
 
 def read_html_file(html_dir, output_folder, filename):
