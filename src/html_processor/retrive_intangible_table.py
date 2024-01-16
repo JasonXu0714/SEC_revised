@@ -35,15 +35,19 @@ def process_list_df(
     output_folder,
     file_name,
 ):
+    form_number = 0
     for form_df in list_df:
         texts = form_df.to_markdown()
         find_match = secret_finder.find_secret(keywords, texts)
         if find_match:
+            file_name_without_extension = file_name.split(".")[0]
+            file_name_with_index = file_name_without_extension + f"_{form_number}.csv"
             export_dataframe.output_to_csv(
                 form_df,
                 folder=output_folder,
-                filename=file_name.replace("txt", "csv"),
+                filename=file_name_with_index,
             )
+            form_number += 1
 
 
 if __name__ == "__main__":
