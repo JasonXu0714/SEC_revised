@@ -1,7 +1,11 @@
 SHELL := /bin/bash
 export PYTHONPATH := $(shell pwd)
+
 .PHONY: all setup creat_dir pull_intangible_form process_csv csv_word_count merge_frequency_count clean
 DARA_DIRS= raw_data intangible_local attchment csv_to_extract extracted_csv frequency_count frequency_merged intangible test test_count test_merge
+
+move_file:
+	bash src/bash/move_file.sh "test" "test/test_output"
 
 setup:
 	@echo "Moving to main branch"
