@@ -19,7 +19,7 @@ creat_dir:
 	mkdir -p $(addprefix data/,$(DARA_DIRS))
 pull_intangible_form:
 	echo "Running script to pull forms containing intangible asset ..."
-	venv/bin/python src/html_processor/retrive_intangible_table.py "first_html" "intangible_local"
+	bash src/bash/intangible_form_count.sh "first_html" "intangible_local"
 
 process_csv:
 	echo "Extracting numerical records related with intangible assets"
