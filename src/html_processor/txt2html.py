@@ -1,4 +1,4 @@
-from html2text import html2text
+import os
 from pathlib import Path
 from glob import glob
 from multiprocessing import Pool
@@ -23,6 +23,11 @@ def read_str(file_path, encoding="latin1"):
 # process(file_path):
 def is_annual_report(file_path):
     """sampel input /...../filename.txt"""
+    if not os.path.isfile(file_path):
+        return False
+
+    # Get the file name from the file path
+    file_name = os.path.basename(file_path)
     file_name = file_path.split("/")[-1]
     filing_type = file_name.split("_")[1]
     return "K" in filing_type
@@ -35,7 +40,7 @@ def is_annual_report(file_path):
 # The commented-out line
 # converted_text = html2text("\n".join(html_content)) suggests an intention to convert HTML to plain text,
 # but it's currently not active, and instead, the HTML content is saved as is. ???
-def process(file_path):
+def process(file_path, output_folder="first_html"):
     """
     Processes each file to extract HTML content and convert it to text.
     Saves the converted text in a specified directory.
@@ -43,7 +48,7 @@ def process(file_path):
     # won't process 10q file
     if not is_annual_report(file_path):
         return
-    output_path = Path(file_path.replace("raw_data", "first_html"))
+    output_path = Path(file_path.replace("raw_data", output_folder))
     output_path.parent.mkdir(exist_ok=True, parents=True)
 
     html_content = []
@@ -70,8 +75,9 @@ def main():
     Main function to process files in parallel using multiprocessing.
     """
     # don't forget to replace file path with your original data path(txt file)
-    file_paths = glob("/Users/yanzhe.li/Documents/sec_webscraping/data/raw_data/*")
-
+    root_dir = os.getcwd()
+    input_path = os.path.join(root_dir, "data/raw_data/**")
+    file_paths = glob(input_path, recursive=True)
     with Pool(20) as pool:
         with tqdm(total=len(file_paths)) as progress_bar:
             for _ in pool.imap(process, file_paths):
