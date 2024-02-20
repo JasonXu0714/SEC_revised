@@ -17,10 +17,12 @@ setup:
 creat_dir:
 	@echo "Creating data sub directory if not existed..."
 	mkdir -p $(addprefix data/,$(DARA_DIRS))
+# pull_intangible_form:
+# 	echo "Running script to pull forms containing intangible asset ..."
+# 	bash src/bash/intangible_form_count.sh "first_html" "intangible_local"
 pull_intangible_form:
-	echo "Running script to pull forms containing intangible asset ..."
-	bash src/bash/intangible_form_count.sh "first_html" "intangible_local"
-
+	@echo "Running script to pull forms containing intangible asset ..."
+	@venv/bin/python  src/html_processor/retrive_intangible_table_refactor.py "first_html" "test_intangible"
 process_csv:
 	echo "Extracting numerical records related with intangible assets"
 	venv/bin/python src/csv_preprocessor/process_csv.py  "intangible_local" "test_intangible"
