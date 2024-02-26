@@ -22,12 +22,12 @@ creat_dir:
 # 	bash src/bash/intangible_form_count.sh "first_html" "intangible_local"
 pull_intangible_form:
 	@echo "Running script to pull forms containing intangible asset ..."
-	@venv/bin/python  src/html_processor/retrive_intangible_table_refactor.py "first_html" "test_intangible"
+	@venv/bin/python  src/html_processor/retrive_intangible_table_refactor.py "first_html_subsample" "test_intangible"
 process_csv:
 	echo "Extracting numerical records related with intangible assets"
-	venv/bin/python src/csv_preprocessor/process_csv.py  "intangible_local" "test_intangible"
+	venv/bin/python src/csv_preprocessor/process_csv.py  "test_intangible" "keep_two_column_intangible_test"
 csv_word_count:
-	venv/bin/python src/text_processor/frequency_count_csv.py "test_intangible" "test_count" 
+	venv/bin/python src/text_processor/frequency_count_csv.py "keep_two_column_intangible_test" "test_count" 
 merge_frequency_count:
 	venv/bin/python src/csv_preprocessor/merge_frequency_count.py  "test_count" "test_merge"
 clean test_dirs:

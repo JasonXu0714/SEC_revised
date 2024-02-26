@@ -50,7 +50,7 @@ def read_html_file(src_dir, output_folder, filename):
     try:
         with open(os.path.join(src_dir, filename), "r") as f:
             list_df = pd.read_html(f)
-    except ValueError as e:
+    except Exception as e:
         # print(e)
         return
     process_list_df(list_df, output_folder, filename)
